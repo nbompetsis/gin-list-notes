@@ -24,7 +24,7 @@ services:
   
   pgadmin:
     container_name: postgres-ui
-    image: dpage/pgadmin4:7.5
+    image: dpage/pgadmin4:8.5
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
