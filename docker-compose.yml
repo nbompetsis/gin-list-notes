@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:16
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: notes
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready",
+          "--dbname=notes"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  pgadmin:
+    container_name: postgres-ui
+    image: dpage/pgadmin4:7.5
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - 5050:80
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+
+  migration:
+    container_name: migration-step
+    image: flyway/flyway:10
+    environment:
+      - FLYWAY_USER=postgres
+      - FLYWAY_PASSWORD=password
+      - FLYWAY_URL=jdbc:postgresql://db:5432/notes
+    command: -connectRetries=10 migrate
+    volumes:
+      - ./schema:/flyway/sql
+    depends_on:
+      db:
+        condition: service_healthy
