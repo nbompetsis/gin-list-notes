@@ -10,10 +10,13 @@ import (
 func main() {
 
 	dsn := "host=localhost user=postgres password=password dbname=notes port=5432 sslmode=disable TimeZone=Europe/Athens"
-	_, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	db.AutoMigrate(&List{}, &Note{}, &ListNotes{})
+	note := Note{Name: "Example"}
+	db.Create(&note)
 }

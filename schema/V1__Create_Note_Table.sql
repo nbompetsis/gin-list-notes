@@ -1,4 +1,4 @@
-CREATE TABLE note (
+CREATE TABLE notes (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100)
 );
