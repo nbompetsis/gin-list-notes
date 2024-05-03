@@ -1,4 +1,4 @@
-module github.com/nbompetsis/gin-list-notes
+module github.com/nbompetsis/gin-list-notes/app
 
 go 1.21.5
 
