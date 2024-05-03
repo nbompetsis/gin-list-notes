@@ -1,4 +1,5 @@
 CREATE TABLE notes (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(100)
+  name VARCHAR(100) NOT NULL,
+  UNIQUE (name)
 );

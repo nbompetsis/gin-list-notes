@@ -1,7 +1,7 @@
 CREATE TABLE lists(
   id SERIAL PRIMARY KEY,
-  name VARCHAR(100),
-  owner VARCHAR(100),  -- Keep the owner's email
-  created DATE,
-  active BOOLEAN
+  name VARCHAR(100) NOT NULL,
+  owner VARCHAR(100) NOT NULL,
+  created DATE NOT NULL DEFAULT current_date,
+  active BOOLEAN NOT NULL DEFAULT true
 );
