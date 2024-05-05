@@ -14,7 +14,7 @@ func Connection() *gorm.DB {
 
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Error loading .env file", err)
 	}
 
 	host := os.Getenv("host")
@@ -26,7 +26,7 @@ func Connection() *gorm.DB {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=%s", host, user, password, dbName, port, timeZone)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("DB creation error", err)
+		log.Fatal("Error creating db connection", err)
 	}
 
 	return db
