@@ -14,6 +14,8 @@ type ListNotesRepository interface {
 	FindByOwnerAndActive(owner string, active bool) (lists []models.List, err error)
 	Delete(listId uint) error
 	Disable(listId uint) error
+	CheckedNote(list *models.List, noteId uint) error
+	CheckedAllNotes(list *models.List) error
 }
 
 type ListNotesRepositoryImpl struct {
@@ -42,7 +44,7 @@ func (repo ListNotesRepositoryImpl) Update(list *models.List) error {
 
 func (repo ListNotesRepositoryImpl) FindById(listId uint) (l models.List, err error) {
 	var list models.List
-	result := repo.DB.First(&list, "id = ?", listId)
+	result := repo.DB.Preload("Notes").First(&list, "id = ?", listId)
 	if result.Error != nil {
 		return list, errors.New("list not found")
 	}
@@ -51,7 +53,7 @@ func (repo ListNotesRepositoryImpl) FindById(listId uint) (l models.List, err er
 
 func (repo ListNotesRepositoryImpl) FindByOwnerAndActive(owner string, active bool) (lists []models.List, err error) {
 	var l []models.List
-	result := repo.DB.Where("owner = ? and active = ?", owner, active).Find(&l)
+	result := repo.DB.Preload("Notes").Where("owner = ? and active = ?", owner, active).Find(&l)
 	if result.Error != nil || result.RowsAffected == 0 {
 		return l, errors.New("lists not found")
 	}
@@ -72,6 +74,26 @@ func (repo ListNotesRepositoryImpl) Disable(listId uint) error {
 	result := repo.DB.Model(list).Where("id = ? and active = true", listId).Update("active", false)
 	if result.Error != nil || result.RowsAffected == 0 {
 		return errors.New("list is not active")
+	}
+	return nil
+}
+
+func (repo ListNotesRepositoryImpl) CheckedNote(list *models.List, noteId uint) error {
+	result := repo.DB.Model(&models.ListNotes{}).Where("list_id = ? AND note_id = ? AND checked = false", list.ID, noteId).Update("checked", true)
+	if result.Error != nil || result.RowsAffected == 0 {
+		return errors.New("note is already checked or not found")
+	}
+	return nil
+}
+
+func (repo ListNotesRepositoryImpl) CheckedAllNotes(list *models.List) error {
+	var noteIds []uint
+	for _, n := range list.Notes {
+		noteIds = append(noteIds, n.ID)
+	}
+	result := repo.DB.Model(&models.ListNotes{}).Where("list_id = ? AND note_id in ? AND checked = false", list.ID, noteIds).Update("checked", true)
+	if result.Error != nil || result.RowsAffected == 0 {
+		return errors.New("note is already checked or not found")
 	}
 	return nil
 }
