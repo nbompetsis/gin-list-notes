@@ -12,10 +12,13 @@ type List struct {
 }
 
 type Note struct {
-	ID   uint   `gorm:"primaryKey"`
-	Name string `gorm:"size:100;unique;not null"`
+	ID      uint   `gorm:"primaryKey"`
+	Name    string `gorm:"size:100;unique;not null"`
+	Checked bool   `gorm:"default:false;not null;-"`
 }
 
 type ListNotes struct {
+	ListID  uint `gorm:"primaryKey"`
+	NoteID  uint `gorm:"primaryKey"`
 	Checked bool `gorm:"default:false;not null"`
 }
