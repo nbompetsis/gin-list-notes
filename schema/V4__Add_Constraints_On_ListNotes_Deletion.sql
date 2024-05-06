@@ -16,3 +16,7 @@ ADD CONSTRAINT fk_list_notes_note_id
 FOREIGN KEY (note_id)
 REFERENCES notes(id)
 ON DELETE CASCADE;
+
+ALTER TABLE list_notes
+ADD CONSTRAINT pk_list_notes
+PRIMARY KEY (list_id, note_id)
