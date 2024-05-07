@@ -6,13 +6,13 @@ ALTER TABLE list_notes
 DROP CONSTRAINT fk_note;
 
 ALTER TABLE list_notes
-ADD CONSTRAINT fk_list_notes_list_id
+ADD CONSTRAINT fk_list_notes_list
 FOREIGN KEY (list_id)
 REFERENCES lists(id)
 ON DELETE CASCADE;
 
 ALTER TABLE list_notes
-ADD CONSTRAINT fk_list_notes_note_id
+ADD CONSTRAINT fk_list_notes_note
 FOREIGN KEY (note_id)
 REFERENCES notes(id)
 ON DELETE CASCADE;

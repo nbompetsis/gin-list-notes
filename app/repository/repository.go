@@ -6,11 +6,10 @@ import (
 
 type ListNotesRepository interface {
 	Save(list models.List) error
-	Update(list *models.List) error
-	FindByID(listID uint) (list models.List, err error)
-	FindByOwnerAndActive(owner string, active bool) (lists []models.List, err error)
-	Delete(listID uint) error
-	Disable(listID uint) error
-	CheckedNote(list *models.List, noteID uint) error
-	CheckedAllNotes(list *models.List) error
+	Update(listId uint, updatedList models.List) error
+	FindListNotesByListID(listID uint) (listNotesInfo models.ListNotesInfo, err error)
+	FindListNotesByOwner(owner string) (listNotesInfo []models.ListNotesInfo, err error)
+	DeleteList(listID uint) error
+	CheckNote(listID uint, noteID uint) error
+	CheckAllNotes(listID uint) error
 }

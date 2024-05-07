@@ -22,3 +22,11 @@ type ListNotes struct {
 	NoteID  uint `gorm:"primaryKey"`
 	Checked bool `gorm:"default:false;not null"`
 }
+
+type ListNotesInfo struct {
+	ListID      uint
+	ListName    string
+	NoteID      uint
+	NoteName    string
+	NoteChecked bool
+}
