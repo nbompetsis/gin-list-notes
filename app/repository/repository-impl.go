@@ -42,22 +42,17 @@ func mergeNotes(DB *gorm.DB, notes []models.Note) ([]models.Note, error) {
 	if err != nil {
 		return []models.Note{}, err
 	}
-
 	set := make(map[string]bool)
 	for _, element := range existedNotes {
 		set[element.Name] = true
 	}
 	var mergeNotes []models.Note
-	if len(existedNotes) == len(notes) {
-		mergeNotes = existedNotes
-	} else {
-		for _, element := range noteNames {
-			if !set[element] {
-				mergeNotes = append(mergeNotes, models.Note{Name: element})
-			}
+	for _, element := range noteNames {
+		if !set[element] {
+			mergeNotes = append(mergeNotes, models.Note{Name: element})
 		}
-		mergeNotes = append(mergeNotes, existedNotes...)
 	}
+	mergeNotes = append(mergeNotes, existedNotes...)
 	return mergeNotes, nil
 }
 
@@ -85,7 +80,7 @@ func (repo ListNotesRepositoryImpl) AddListNotes(listID uint, notes []models.Not
 	var list models.List
 	repo.DB.Where("id=?", listID).Find(&list)
 
-	err = repo.DB.Model(&list).Association("Notes").Replace(mergeNotes)
+	err = repo.DB.Model(&list).Association("Notes").Append(mergeNotes)
 	if err != nil {
 		return err
 	}
