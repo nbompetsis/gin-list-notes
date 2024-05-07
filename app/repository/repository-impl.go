@@ -94,8 +94,9 @@ func (repo ListNotesRepositoryImpl) AddListNotes(listID uint, notes []models.Not
 
 func (repo ListNotesRepositoryImpl) FindListNotesByListID(listID uint) (models.ListNotesInfo, error) {
 	var listNotes []models.ListNotesInfo
-	result := repo.DB.Raw("SELECT lists.id AS list_id, lists.name AS list_name, notes.id AS note_id, "+
-		"notes.name AS note_name, list_notes.checked AS note_checked FROM lists "+
+	result := repo.DB.Raw("SELECT lists.id AS list_id, lists.name AS list_name, lists.active AS list_active,"+
+		"notes.id AS note_id, notes.name AS note_name, list_notes.checked AS note_checked "+
+		"FROM lists "+
 		"INNER JOIN list_notes ON lists.id = list_notes.list_id "+
 		"INNER JOIN notes ON list_notes.note_id = notes.id WHERE lists.id = ?", listID).Scan(&listNotes)
 	if result.Error != nil || result.RowsAffected == 0 || len(listNotes) != 1 {
@@ -106,8 +107,9 @@ func (repo ListNotesRepositoryImpl) FindListNotesByListID(listID uint) (models.L
 
 func (repo ListNotesRepositoryImpl) FindListNotesByOwner(owner string) ([]models.ListNotesInfo, error) {
 	var listNotes []models.ListNotesInfo
-	result := repo.DB.Raw("SELECT lists.id AS list_id, lists.name AS list_name, notes.id AS note_id, "+
-		"notes.name AS note_name, list_notes.checked AS note_checked FROM lists "+
+	result := repo.DB.Raw("SELECT lists.id AS list_id, lists.name AS list_name, lists.active AS list_active,"+
+		"notes.id AS note_id, notes.name AS note_name, list_notes.checked AS note_checked "+
+		"FROM lists "+
 		"INNER JOIN list_notes ON lists.id = list_notes.list_id "+
 		"INNER JOIN notes ON list_notes.note_id = notes.id WHERE lists.owner = ?", owner).Scan(&listNotes)
 	if result.Error != nil || result.RowsAffected == 0 {

@@ -26,6 +26,7 @@ type ListNotes struct {
 type ListNotesInfo struct {
 	ListID      uint
 	ListName    string
+	ListActive  bool
 	NoteID      uint
 	NoteName    string
 	NoteChecked bool
