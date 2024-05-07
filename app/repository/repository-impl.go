@@ -20,7 +20,6 @@ func NewListNotesRepositoryImpl() ListNotesRepository {
 }
 
 func (repo ListNotesRepositoryImpl) Save(list models.List) error {
-	// Check if each note exists
 	mergeNotes, err := mergeNotes(repo.DB, list.Notes)
 	if err != nil {
 		return err
@@ -79,7 +78,6 @@ func (repo ListNotesRepositoryImpl) AddListNotes(listID uint, notes []models.Not
 	}
 	var list models.List
 	repo.DB.Where("id=?", listID).Find(&list)
-
 	err = repo.DB.Model(&list).Association("Notes").Append(mergeNotes)
 	if err != nil {
 		return err
