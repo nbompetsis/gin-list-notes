@@ -46,6 +46,46 @@ func (s ListNotesServiceImpl) AddNotesToList(listData ListData) error {
 	return nil
 }
 
+func (s ListNotesServiceImpl) FindListNotesByListID(listID uint) (ListData, error) {
+	listNotesInfo, err := s.repository.FindListNotesByListID(listID)
+	if err != nil {
+		return ListData{}, err
+	}
+	return mapToListData([]models.ListNotesInfo{listNotesInfo}), nil
+}
+
+func (s ListNotesServiceImpl) FindListNotesByOwner(owner string) (ListData, error) {
+	listNotesInfo, err := s.repository.FindListNotesByOwner(owner)
+	if err != nil {
+		return ListData{}, err
+	}
+	return mapToListData(listNotesInfo), nil
+}
+
+func (s ListNotesServiceImpl) DeleteList(listID uint) error {
+	err := s.repository.DeleteList(listID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s ListNotesServiceImpl) CheckListNote(listID uint, noteID uint) error {
+	err := s.repository.CheckListNote(listID, noteID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s ListNotesServiceImpl) CheckListAllNotes(listID uint) error {
+	err := s.repository.CheckListAllNotes(listID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func mapToList(listData ListData) models.List {
 	list := models.List{
 		ID:     listData.ID,
@@ -59,4 +99,22 @@ func mapToList(listData ListData) models.List {
 	}
 	list.Notes = notes
 	return list
+}
+
+func mapToListData(listNotesInfo []models.ListNotesInfo) ListData {
+	if len(listNotesInfo) == 0 {
+		return ListData{}
+	}
+
+	var notes []NoteData
+	for _, n := range listNotesInfo {
+		notes = append(notes, NoteData{Name: n.NoteName, Checked: n.NoteChecked})
+	}
+	l := ListData{
+		ID:     listNotesInfo[0].ListID,
+		Name:   listNotesInfo[0].ListName,
+		Active: listNotesInfo[0].ListActive,
+		Notes:  notes,
+	}
+	return l
 }
